@@ -12,11 +12,15 @@
         button { padding: 12px 20px; background: #3498db; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
         button:hover { background: #2980b9; }
         #result { margin-top: 10px; }
-        .member-card { background: #f8f9fa; border-left: 5px solid #3498db; padding: 15px; margin-bottom: 10px; border-radius: 4px; }
+        .member-card { background: #f8f9fa; border-left: 5px solid #3498db; padding: 15px; margin-bottom: 15px; border-radius: 4px; }
         .name { font-weight: bold; font-size: 1.1em; color: #333; margin-bottom: 5px; }
-        .info { color: #666; font-size: 0.9em; margin-bottom: 3px; }
-        .phone { color: #2980b9; font-size: 0.9em; font-weight: bold; }
-        .highlight { color: #3498db; font-weight: normal; margin-left: 5px; font-size: 0.9em; }
+        .info { color: #666; font-size: 0.9em; margin-bottom: 8px; }
+        /* 연락처 스타일: 줄바꿈 허용 및 전화 걸기 링크 스타일 */
+        .phone-box { 
+            background: #fff; border: 1px solid #eee; padding: 10px; border-radius: 5px;
+            color: #2980b9; font-size: 0.95em; line-height: 1.5; white-space: pre-wrap; 
+        }
+        .phone-link { color: #2980b9; text-decoration: none; font-weight: bold; }
         .no-result { text-align: center; color: #999; padding: 20px; }
     </style>
 </head>
@@ -32,7 +36,7 @@
 </div>
 
 <script>
-    // 데이터 배열 안에 "전화" 항목을 추가했습니다.
+    // 보내주신 데이터 (연락처 키값 사용)
     const memberData = [
   {
     "이름": "김이삭",
@@ -14095,27 +14099,30 @@
     function search() {
         const keyword = document.getElementById('searchInput').value.trim();
         const resultDiv = document.getElementById('result');
-        
         resultDiv.innerHTML = '';
 
-        if (keyword === '') {
-            alert('이름을 입력해주세요.');
+        if (!keyword) {
+            alert('이름을 입력해 주세요.');
             return;
         }
 
-        const results = memberData.filter(member => member.이름.includes(keyword));
+        // 이름에 키워드가 포함된 사람 찾기
+        const results = memberData.filter(m => m.이름.includes(keyword));
 
         if (results.length > 0) {
-            results.forEach(member => {
+            results.forEach(m => {
                 const card = document.createElement('div');
                 card.className = 'member-card';
-                // 전화번호가 있는 경우와 없는 경우를 대비해 처리
-                const phoneDisplay = member.전화 ? member.전화 : "번호 없음";
+                
+                // 데이터의 "연락처" 필드를 가져옵니다.
+                const contactInfo = m["연락처"] || "등록된 연락처가 없습니다.";
                 
                 card.innerHTML = `
-                    <div class="name">${member.이름} <span class="highlight">${member.직분}</span></div>
-                    <div class="info">${member.교구} | ${member.순}</div>
-                    <div class="phone">📞 ${phoneDisplay}</div>
+                    <div class="name">${m.이름} <span style="font-weight:normal; color:#888; font-size:0.8em;">${m.직분}</span></div>
+                    <div class="info">${m.교구} | ${m.순}</div>
+                    <div class="phone-box">
+                        ${contactInfo}
+                    </div>
                 `;
                 resultDiv.appendChild(card);
             });
@@ -14124,6 +14131,5 @@
         }
     }
 </script>
-
 </body>
 </html>
